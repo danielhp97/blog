@@ -1,5 +1,5 @@
 ---
-title: "Daniel Pereira"
+title: "Daniel Henriques Pereira"
 meta_title: "About"
 image: "/images/author.png"
 draft: false
