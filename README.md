@@ -1,75 +1,116 @@
-# My Blog
+<h1 align=center>Bookworm Light Astro</h1>
+<p align=center>Bookworm Light is a feature-rich, minimal, highly customizable, easy-to-use free Astro blog theme.</p>
+<h2 align="center"> <a target="_blank" href="https://bookworm-light-astro.vercel.app/" rel="nofollow">👀Demo</a> | <a  target="_blank" href="https://pagespeed.web.dev/report?url=https%3A%2F%2Fbookworm-light-astro.vercel.app%2F&form_factor=desktop">Page Speed (100%)🚀</a>
+</h2>
 
-Personal blog built with [Astro](https://astro.build), hosted on GitHub Pages.
+<p align=center>
+  <a href="https://github.com/withastro/astro/releases/tag/astro%406.0.0-beta.17" alt="Contributors">
+    <img src="https://img.shields.io/static/v1?label=ASTRO&message=6.0%20beta&color=000&logo=astro" />
+  </a>
 
-## Setup
+  <a href="https://github.com/themefisher/bookworm-light-astro/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/themefisher/bookworm-light-astro" alt="license"></a>
 
-```bash
+  <img src="https://img.shields.io/github/languages/code-size/themefisher/bookworm-light-astro" alt="code size">
+
+  <a href="https://github.com/themefisher/bookworm-light-astro/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/themefisher/bigspring-light-astro" alt="contributors"></a>
+</p>
+
+![bookworm-light](https://assets.teamosis.com/thumbs/bookworm-light.png)
+
+Bookworm Light is a minimal multi-author free Astro blog theme which is perfect for any kind of blog website. Whether you're interested in food, beauty, travel, photography, lifestyle, fitness, health, or other topics, this theme is a great fit. The theme is super fast and SEO friendly which makes it easier for your content to be discovered by search engines.
+
+## 🔑Key Features
+
+- 🎨 Highly Customizable (Color, Font, Menu, Social Links, SEO Meta Tags, etc.)
+- 👥 Multi-Author Support
+- 📚 Authors Page
+- 👤 Author Single Page
+- 🔍 Search Functionality with FuseJS
+- 🏷️ Tags and Categories Support
+- 📲 Post Social Share Option
+- 🔗 Similar Post Suggestions
+- ⚡ Fast by Default (95+ Google PageSpeed Score)
+- ⚙️ Netlify Settings Pre-configured
+- 📬 Contact Form Support
+- 🌅 Support OG Image
+- ✍️ Write and Update Content in Markdown / MDX
+- 📚 MDX Components Auto Import
+- 📝 Includes Draft Pages and Posts
+- 🚀 Built with Tailwind CSS Framework
+- 📱 Fully Responsive on Desktops, Tablets, and Smartphones
+- 🔍 SEO Friendly
+
+<!-- installation -->
+
+## 🔧Installation
+
+After downloading the template, you have some prerequisites to install. Then you can run it on your localhost. You can view the package.json file to see which scripts are included.
+
+### ⚙️Install prerequisites (once for a machine)
+
+- **Node Installation:** [Install node js](https://nodejs.org/en/download/) [Recommended LTS version]
+
+### 🖥️Local setup
+
+After successfully installing those dependencies, open this template with any IDE [[VS Code](https://code.visualstudio.com/) recommended], and then open the internal terminal of IDM [vs code shortcut <code>ctrl/cmd+\`</code>]
+
+- Install dependencies
+
+```
 npm install
+```
+
+- Run locally
+
+```
 npm run dev
 ```
 
-## Before you publish
+After that, it will open up a preview of the template in your default browser, watch for changes to source files, and live-reload the browser when changes are saved.
 
-1. Open `astro.config.mjs` and replace `username` with your GitHub username
-2. Open `src/layouts/BaseLayout.astro` and replace `your name here` with your name
+## 🔨Production Build
 
-## Writing a post
+After finishing all the customization, you can create a production build by running this command.
 
-Create a new `.md` file in `src/content/blog/`:
-
-```markdown
----
-title: "My post title"
-date: 2026-04-13
-description: "A short description."
-tags: ["travel", "portugal"]
----
-
-Your content here.
+```
+npm run build
 ```
 
-The filename becomes the URL slug: `my-post.md` → `/blog/my-post`
+<!-- edit with sitepins -->
 
-## Adding a Google Photos album
+## 📝 Edit Content with CMS
 
-Rename your post file from `.md` to `.mdx`, then paste your Google Photos embed directly in the content.
+This template comes pre-configured with [**Sitepins**](https://sitepins.com/?aff=tfgithub), a Git-based Headless CMS designed for seamless content management. You can update your website’s text, images, and configuration without touching a single line of code.
 
-## Deploy
+**How to get started:**
 
-Push to GitHub. Set up GitHub Pages in repo Settings → Pages → Source: GitHub Actions.
+Click the Edit with Sitepins button below and follow the on-screen instructions to start editing your content visually.
 
-Add this file at `.github/workflows/deploy.yml`:
+  <a target="_blank" href="https://app.sitepins.com/new/clone?name=Bookworm%20Light%20Astro&repository=https://github.com/themefisher/bookworm-light-astro/?aff=tfgithub">
+    <img src="https://sitepins.com/button.svg" alt="Edit with Sitepins">
+  </a>
+  
+<!-- reporting issue -->
 
-```yaml
-name: Deploy to GitHub Pages
+## 🐞Reporting Issues
 
-on:
-  push:
-    branches: [main]
+We use GitHub Issues as the official bug tracker for this Template. Please Search [existing issues](https://github.com/themefisher/bookworm-light-astro/issues). It’s possible someone has already reported the same problem.
+If your problem or idea has not been addressed yet, feel free to [open a new issue](https://github.com/themefisher/bookworm-light-astro/issues).
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm install
-      - run: npm run build
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist/
+<!-- licence -->
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-    steps:
-      - uses: actions/deploy-pages@v4
-```
+## 📄License
+
+Copyright (c) 2023 - Present, Designed & Developed by [Themefisher](https://themefisher.com)
+
+**Code License:** Released under the [MIT](https://github.com/themefisher/bookworm-light-astro/blob/main/LICENSE) license.
+
+**Image license:** The images are only for demonstration purposes. They have their license, we don't have permission to share those images.
+
+## 👨‍💻Need Custom Development Services?
+
+Besides developing beautifully designed and blazing-fast themes, we help businesses create fast, performance-focused, scalable & secure websites based on NextJs, Hugo, Astro, etc.
+
+If you need a custom theme, theme customization, or complete website development services from scratch you can [Hire Us](https://themefisher.com/contact).

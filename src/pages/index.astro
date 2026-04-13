@@ -1,51 +1,22 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import Posts from "@/components/Posts.astro";
+import config from "@/config/config.json";
+import Base from "@/layouts/Base.astro";
+import Pagination from "@/layouts/components/Pagination.astro";
+import { getSinglePage } from "@/lib/contentParser.astro";
+import { sortByDate } from "@/lib/utils/sortFunctions";
 
-const posts = (await getCollection('blog')).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
-);
-
-const recent = posts.slice(0, 5);
+const posts = await getSinglePage("posts");
+const sortedPosts = sortByDate(posts);
+const totalPages = Math.ceil(posts.length / config.settings.pagination);
+const currentPosts = sortedPosts.slice(0, config.settings.pagination);
 ---
 
-<BaseLayout title="Home">
-  <div class="container">
-    <div class="hero">
-      <p class="hero-eyebrow">Journal</p>
-      <h1 class="hero-title">Traveling, thinking,<br />writing it down.</h1>
-      <p class="hero-sub">A personal blog about places I've been and things on my mind.</p>
+<Base>
+  <section class="section">
+    <div class="container">
+      <Posts posts={currentPosts} className="mb-16" />
+      <Pagination currentPage={1} totalPages={totalPages} />
     </div>
-
-    <section>
-      {recent.map(post => {
-        const formatted = new Intl.DateTimeFormat('en-US', {
-          year: 'numeric', month: 'long', day: 'numeric'
-        }).format(post.data.date);
-
-        return (
-          <div class="post-card">
-            <p class="post-card-meta">{formatted}</p>
-            <h2 class="post-card-title">
-              <a href={`/blog/${post.slug}`}>{post.data.title}</a>
-            </h2>
-            <p class="post-card-desc">{post.data.description}</p>
-            {post.data.tags && (
-              <div class="post-card-tags">
-                {post.data.tags.map(tag => (
-                  <span class="tag">{tag}</span>
-                ))}
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </section>
-
-    {posts.length > 5 && (
-      <p style="padding: 2rem 0;">
-        <a href="/blog">All posts →</a>
-      </p>
-    )}
-  </div>
-</BaseLayout>
+  </section>
+</Base>
