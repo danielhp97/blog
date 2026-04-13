@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const recent = posts.slice(0, 5);
+---
+
+<BaseLayout title="Home">
+  <div class="container">
+    <div class="hero">
+      <p class="hero-eyebrow">Journal</p>
+      <h1 class="hero-title">Traveling, thinking,<br />writing it down.</h1>
+      <p class="hero-sub">A personal blog about places I've been and things on my mind.</p>
+    </div>
+
+    <section>
+      {recent.map(post => {
+        const formatted = new Intl.DateTimeFormat('en-US', {
+          year: 'numeric', month: 'long', day: 'numeric'
+        }).format(post.data.date);
+
+        return (
+          <div class="post-card">
+            <p class="post-card-meta">{formatted}</p>
+            <h2 class="post-card-title">
+              <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+            </h2>
+            <p class="post-card-desc">{post.data.description}</p>
+            {post.data.tags && (
+              <div class="post-card-tags">
+                {post.data.tags.map(tag => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </section>
+
+    {posts.length > 5 && (
+      <p style="padding: 2rem 0;">
+        <a href="/blog">All posts →</a>
+      </p>
+    )}
+  </div>
+</BaseLayout>

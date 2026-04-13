@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+
+<BaseLayout title="Writing">
+  <div class="container">
+    <div class="hero" style="padding-bottom: 1rem;">
+      <h1 class="hero-title" style="font-size: clamp(1.8rem, 4vw, 2.5rem);">All posts</h1>
+    </div>
+
+    <section>
+      {posts.map(post => {
+        const formatted = new Intl.DateTimeFormat('en-US', {
+          year: 'numeric', month: 'long', day: 'numeric'
+        }).format(post.data.date);
+
+        return (
+          <div class="post-card">
+            <p class="post-card-meta">{formatted}</p>
+            <h2 class="post-card-title">
+              <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+            </h2>
+            <p class="post-card-desc">{post.data.description}</p>
+            {post.data.tags && (
+              <div class="post-card-tags">
+                {post.data.tags.map(tag => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </section>
+  </div>
+</BaseLayout>

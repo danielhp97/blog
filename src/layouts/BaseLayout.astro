@@ -1,0 +1,47 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'A personal blog about travel and other things.' } = Astro.props;
+const siteName = 'your name here'; // replace this
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title} — {siteName}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <header>
+      <div class="container--wide">
+        <nav>
+          <div class="nav-inner">
+            <a href="/" class="nav-logo">{siteName}</a>
+            <ul class="nav-links">
+              <li><a href="/blog">Writing</a></li>
+              <li><a href="/about">About</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer>
+      <div class="container--wide">
+        <p>© {new Date().getFullYear()} {siteName}</p>
+      </div>
+    </footer>
+  </body>
+</html>
