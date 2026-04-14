@@ -4,7 +4,6 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import AutoImport from "astro-auto-import";
 import { defineConfig, sharpImageService } from "astro/config";
-import remarkCollapse from "remark-collapse";
 import remarkToc from "remark-toc";
 import config from "./src/config/config.json";
 
@@ -27,12 +26,15 @@ export default defineConfig({
         "@/shortcodes/Youtube",
         "@/shortcodes/Tabs",
         "@/shortcodes/Tab",
+        "@/shortcodes/PhotoGrid",
+        "@/shortcodes/GooglePhotosAlbum",
+        "@/shortcodes/TrekMap",
       ],
     }),
     mdx(),
   ],
   markdown: {
-    remarkPlugins: [remarkToc, [remarkCollapse, { test: "Table of contents" }]],
+    remarkPlugins: [remarkToc],
     shikiConfig: { theme: "one-dark-pro", wrap: true },
   },
 });
