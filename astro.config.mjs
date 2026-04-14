@@ -5,13 +5,13 @@ import tailwindcss from "@tailwindcss/vite";
 import AutoImport from "astro-auto-import";
 import { defineConfig, sharpImageService } from "astro/config";
 import remarkToc from "remark-toc";
-import config from "./src/config/config.json";
+
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://danielhp97.github.io',
   base: '/blog',
-  trailingSlash: config.site.trailing_slash ? "always" : "never",
+  trailingSlash: "ignore",
   image: { service: sharpImageService() },
   vite: { plugins: [tailwindcss()] },
   integrations: [
