@@ -1,0 +1,259 @@
+---
+import Share from "@/components/Share.astro";
+import SimilarPosts from "@/components/SimilarPosts.astro";
+import { getSinglePage } from "@/lib/contentParser.astro";
+import dateFormat from "@/lib/utils/dateFormat";
+import similerItems from "@/lib/utils/similarItems";
+import { humanize, markdownify, slugify } from "@/lib/utils/textConverter";
+import { Image } from "astro:assets";
+import { render } from "astro:content";
+import { BiCalendarEdit, BiCategoryAlt } from "react-icons/bi";
+
+const posts = await getSinglePage("posts");
+const { post } = Astro.props;
+const similarPosts = similerItems(post, posts, post.slug);
+const { Content, headings } = await render(post);
+const { title, description, authors, categories, image, date, tags, stats, trip, trip_title } =
+  post.data;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+// All posts in the same trip, sorted by date ascending
+const tripPosts = trip
+  ? posts
+      .filter((p) => p.data.trip === trip)
+      .sort((a, b) => (a.data.date?.getTime() ?? 0) - (b.data.date?.getTime() ?? 0))
+  : [];
+
+const tripLabel = trip_title ?? (trip ? humanize(trip) : null);
+
+// Only h2 and h3 for the sidebar ToC
+const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const hasSidebar = tocHeadings.length > 0 || tripPosts.length > 0;
+---
+
+<!-- ─── Hero ──────────────────────────────────────────────────────────────── -->
+{
+  image ? (
+    <div class="container mt-10">
+      <div class="relative overflow-hidden rounded-2xl">
+        <Image
+          src={image}
+          alt={title}
+          class="w-full object-cover h-[420px] md:h-[500px]"
+          loading="eager"
+          widths={[800, 1200, 1600]}
+          sizes="(max-width: 1000px) 100vw, 1000px"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-dark/85 via-dark/30 to-transparent" />
+        <div class="absolute bottom-0 left-0 right-0 p-8 md:p-10">
+          <ul class="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-white/70 text-sm">
+            <li class="flex items-center gap-1.5">
+              <BiCalendarEdit className="h-4 w-4" />
+              {dateFormat(date)}
+            </li>
+            {categories.map((category: string) => (
+              <li>
+                <a
+                  href={`${base}/categories/${slugify(category)}`}
+                  class="rounded-full bg-white/20 px-3 py-0.5 text-white hover:bg-primary transition"
+                >
+                  {humanize(category)}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <h1
+            set:html={markdownify(title)}
+            class="text-white text-3xl md:text-4xl font-bold leading-tight mb-2"
+          />
+          {description && (
+            <p class="text-white/80 text-lg max-w-2xl leading-snug">
+              {description}
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  ) : (
+    <section class="section pb-0">
+      <div class="container">
+        <div class="row justify-center">
+          <div class="md:col-10 text-center">
+            <h1 set:html={markdownify(title)} class="h2" />
+            {description && (
+              <p class="mt-4 text-lg text-text leading-relaxed max-w-prose mx-auto">
+                {description}
+              </p>
+            )}
+            <ul class="mt-5 flex flex-wrap items-center justify-center text-text">
+              <li class="mx-3 font-medium">{authors.join(", ")}</li>
+              <li class="mx-3 flex items-center flex-wrap font-medium">
+                <BiCalendarEdit className="mr-1 h-5 w-5 text-gray-600" />
+                {dateFormat(date)}
+              </li>
+              <li class="mx-3 flex items-center flex-wrap">
+                <BiCategoryAlt className="mr-1 h-[18px] w-[18px] text-gray-600" />
+                <ul>
+                  {categories.map((category: string, i: number) => (
+                    <li class="inline-block">
+                      <a
+                        href={`${base}/categories/${slugify(category)}`}
+                        class="mr-2 hover:text-primary font-medium"
+                      >
+                        {humanize(category)}
+                        {i !== post.data.categories.length - 1 && ","}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<!-- ─── Stats bar ─────────────────────────────────────────────────────────── -->
+{
+  stats && stats.length > 0 && (
+    <div class="container mt-6">
+      <div class="flex flex-wrap gap-3">
+        {stats.map((stat: { label: string; value: string }) => (
+          <div class="flex-1 min-w-[120px] rounded-xl border border-border bg-light px-5 py-4 text-center">
+            <div class="text-xs font-semibold uppercase tracking-wider text-primary mb-1">
+              {stat.label}
+            </div>
+            <div class="font-bold text-dark text-lg leading-tight">{stat.value}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+<!-- ─── Content + Sidebar ─────────────────────────────────────────────────── -->
+<section class="section pt-10">
+  <div class="container">
+    <div class="row">
+
+      <!-- Sidebar — hidden on mobile, sticky on desktop -->
+      {
+        hasSidebar && (
+          <aside class="hidden md:block md:col-3">
+            <div class="sticky top-6 max-h-[calc(100vh-4rem)] overflow-y-auto space-y-8 pr-2">
+
+              <!-- Trip navigation -->
+              {tripPosts.length > 0 && tripLabel && (
+                <div>
+                  <a
+                    href={`${base}/trips/${trip}`}
+                    class="block text-xs font-semibold uppercase tracking-wider text-primary mb-3 hover:opacity-80 transition"
+                  >
+                    {tripLabel} →
+                  </a>
+                  <nav>
+                    <ul class="space-y-1">
+                      {tripPosts.map((p) => {
+                        const isCurrent = p.id === post.id;
+                        return (
+                          <li>
+                            <a
+                              href={`${base}/${p.data.slug ?? p.id}`}
+                              class={`block text-sm py-0.5 leading-snug transition ${
+                                isCurrent
+                                  ? "font-semibold text-dark"
+                                  : "text-text hover:text-dark"
+                              }`}
+                            >
+                              {isCurrent && (
+                                <span class="inline-block w-1.5 h-1.5 rounded-full bg-primary mr-1.5 mb-0.5" />
+                              )}
+                              {p.data.title}
+                            </a>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </nav>
+                </div>
+              )}
+
+              <!-- Divider between trip nav and ToC -->
+              {tripPosts.length > 0 && tocHeadings.length > 0 && (
+                <hr class="border-border" />
+              )}
+
+              <!-- Table of Contents -->
+              {tocHeadings.length > 0 && (
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wider text-primary mb-3">
+                    On this page
+                  </p>
+                  <nav>
+                    <ul class="space-y-1">
+                      {tocHeadings.map((h) => (
+                        <li style={h.depth === 3 ? "padding-left: 0.875rem" : ""}>
+                          <a
+                            href={`#${h.slug}`}
+                            class="block text-sm text-text hover:text-dark transition py-0.5 leading-snug"
+                          >
+                            {h.text}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                </div>
+              )}
+
+            </div>
+          </aside>
+        )
+      }
+
+      <!-- Main content -->
+      <div class={`col-12 ${hasSidebar ? "md:col-9" : "md:col-10 mx-auto"}`}>
+        <div class="content mb-16 text-left">
+          <Content />
+        </div>
+        <div class="flex flex-wrap items-center justify-between">
+          <ul class="mr-4 mb-4 space-x-3">
+            {
+              tags.map((tag: string) => (
+                <li class="inline-block">
+                  <a
+                    href={`${base}/tags/${slugify(tag)}`}
+                    class="block rounded-lg bg-light px-4 py-2 font-semibold text-dark text-sm hover:text-primary transition duration-300"
+                  >
+                    #{humanize(tag)}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+          <Share
+            className="social-share mb-4"
+            title={title}
+            description={description}
+            slug={post.data.slug ?? post.id}
+          />
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── Similar posts ────────────────────────────────────────────────────── -->
+{
+  similarPosts.length > 0 && (
+    <section class="section pt-0">
+      <div class="container">
+        <h2 class="mb-8 text-center h3">Similar Posts</h2>
+        <SimilarPosts posts={similarPosts.slice(0, 3)} />
+      </div>
+    </section>
+  )
+}

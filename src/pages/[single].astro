@@ -24,7 +24,7 @@ const { title, meta_title, image, description } = post.data;
   title={title}
   meta_title={meta_title}
   description={description}
-  image={image}
+  image={image?.src}
 >
   <PostSingle post={post} />
 </Base>

@@ -1,0 +1,47 @@
+---
+import Base from "@/layouts/Base.astro";
+import Posts from "@/components/Posts.astro";
+import { getSinglePage } from "@/lib/contentParser.astro";
+import { humanize } from "@/lib/utils/textConverter";
+
+export async function getStaticPaths() {
+  const posts = await getSinglePage("posts");
+
+  // Collect all unique trip slugs
+  const tripSlugs = [
+    ...new Set(posts.filter((p) => p.data.trip).map((p) => p.data.trip!)),
+  ];
+
+  return tripSlugs.map((trip) => {
+    const tripPosts = posts
+      .filter((p) => p.data.trip === trip)
+      .sort((a, b) => (a.data.date?.getTime() ?? 0) - (b.data.date?.getTime() ?? 0));
+
+    return {
+      params: { trip },
+      props: { trip, tripPosts },
+    };
+  });
+}
+
+const { trip, tripPosts } = Astro.props;
+
+// Use trip_title from the first post that has one, otherwise humanize the slug
+const tripTitle =
+  tripPosts.find((p) => p.data.trip_title)?.data.trip_title ?? humanize(trip);
+---
+
+<Base
+  title={tripTitle}
+  description={`All posts from ${tripTitle}`}
+>
+  <section class="section">
+    <div class="container">
+      <h1 class="page-heading">{tripTitle}</h1>
+      <p class="text-center text-text mb-12 -mt-12">
+        {tripPosts.length} {tripPosts.length === 1 ? "post" : "posts"}
+      </p>
+      <Posts posts={tripPosts} fluid={false} />
+    </div>
+  </section>
+</Base>

@@ -1,5 +1,8 @@
+import type { ImageMetadata } from "astro";
+import React from "react";
+
 interface Photo {
-  src: string;
+  src: string | ImageMetadata;
   alt?: string;
   caption?: string;
 }
@@ -16,22 +19,26 @@ export default function PhotoGrid({ photos }: Props) {
     <div
       className={`my-6 grid gap-3 ${isSingle ? "grid-cols-1" : "grid-cols-2"}`}
     >
-      {shown.map((photo, i) => (
-        <figure key={i} className="m-0">
-          <img
-            src={photo.src}
-            alt={photo.alt ?? ""}
-            className="w-full rounded-lg object-cover"
-            loading="lazy"
-            decoding="async"
-          />
-          {photo.caption && (
-            <figcaption className="mt-1.5 text-center text-xs text-text italic">
-              {photo.caption}
-            </figcaption>
-          )}
-        </figure>
-      ))}
+      {shown.map((photo, i) => {
+        const src =
+          typeof photo.src === "string" ? photo.src : photo.src.src;
+        return (
+          <figure key={i} className="m-0">
+            <img
+              src={src}
+              alt={photo.alt ?? ""}
+              className="w-full rounded-lg object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+            {photo.caption && (
+              <figcaption className="mt-1.5 text-center text-xs text-text italic">
+                {photo.caption}
+              </figcaption>
+            )}
+          </figure>
+        );
+      })}
     </div>
   );
 }

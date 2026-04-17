@@ -37,18 +37,30 @@ const contactCollection = defineCollection({
 // Posts collection schema
 const postsCollection = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/posts" }),
-  schema: z.object({
-    title: z.string(),
-    slug: z.string().optional(),
-    meta_title: z.string().optional(),
-    description: z.string().optional(),
-    date: z.coerce.date().optional(),
-    image: z.string().optional(),
-    categories: z.array(z.string()).default(() => ["others"]),
-    authors: z.array(z.string()).default(() => ["Daniel Henriques Pereira"]),
-    tags: z.array(z.string()).default(() => ["others"]),
-    draft: z.boolean().optional(),
-  }),
+  // schema receives the image() helper which validates + optimises local images
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      slug: z.string().optional(),
+      meta_title: z.string().optional(),
+      description: z.string().optional(),
+      date: z.coerce.date().optional(),
+      // Relative path from the content file, e.g. "./my-trip/cover.jpg"
+      image: image().optional(),
+      categories: z.array(z.string()).default(() => ["others"]),
+      authors: z.array(z.string()).default(() => ["Daniel Henriques Pereira"]),
+      tags: z.array(z.string()).default(() => ["others"]),
+      draft: z.boolean().optional(),
+      // Layout preset: "writing" = narrow reading column; "guide" = hero + stats bar
+      preset: z.enum(["writing", "guide"]).default("writing"),
+      // Guide preset: optional stats bar items shown below the hero image
+      stats: z
+        .array(z.object({ label: z.string(), value: z.string() }))
+        .optional(),
+      // Trip grouping: posts sharing the same trip slug are linked in the sidebar nav
+      trip: z.string().optional(),
+      trip_title: z.string().optional(),
+    }),
 });
 
 // Export collections

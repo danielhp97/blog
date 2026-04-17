@@ -3,7 +3,7 @@ title: "First post"
 meta_title: ""
 description: "Getting this thing started."
 date: 2026-04-13T00:00:00Z
-image: "/images/image-placeholder.png"
+image: "../../assets/images/image-placeholder.png"
 categories: ["personal"]
 authors: ["Daniel Henriques Pereira"]
 tags: ["life"]
