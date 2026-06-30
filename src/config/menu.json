@@ -8,19 +8,11 @@
       "name": "About",
       "url": "/about"
     },
-    {
-      "name": "Contact",
-      "url": "/contact"
-    }
   ],
   "footer": [
     {
       "name": "About",
       "url": "/about"
-    },
-    {
-      "name": "Contact",
-      "url": "/contact"
     }
   ]
 }
